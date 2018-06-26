@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="library.model.vo.Notice">
+  
+  	<resultMap type="Notice" id="noticeResultMap">
+  		<id property="noticeNo" column="notice_no"/>
+  		<result property="title" column="title"/>
+  		<result property="description" column="description"/>
+  		<result property="regDate" column="reg_date"/>
+  		<result property="userNo" column="user_no"/>
+  		<result property="users.name" column="name"/>
+  	</resultMap>
+  
+  	<select id="select-all-notice" resultMap="noticeResultMap">
+  		SELECT n.notice_no, n.title, n.description, n.reg_date, n.user_no, u.name 
+		FROM notice n, users u
+		WHERE n.user_no = u.user_no ORDER BY notice_no DESC
+  	</select>
+  	
+  	<insert id="insert-notice" parameterType="notice">
+  		INSERT INTO notice (title, description, reg_date, user_no) 
+		VALUES (#{title}, #{description}, CURDATE(), #{userNo})
+  	</insert>
+ 
+  
+  	<select id="select-notice" parameterType="int" resultMap="noticeResultMap">
+  		SELECT n.notice_no, n.title, n.description, n.reg_date, n.user_no, u.name 
+		FROM notice n, users u
+		WHERE n.user_no = u.user_no AND notice_no = #{notice_no}
+  	</select>
+  	
+  	<update id="update-notice" parameterType="notice">
+  		UPDATE notice SET title = #{title}, description = #{description}
+  		WHERE notice_no = #{noticeNo} 
+  	</update>
+  	
+  	<delete id="delete-notice" parameterType="int">
+  		DELETE FROM notice WHERE notice_no=#{noticeNo}
+  	</delete>
+
+  </mapper>
+  
+  

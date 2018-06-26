@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="library.model.vo.BookList">
+  	<select id="select-all-bookList" resultType="BookList">
+  		SELECT *FROM bookList
+  	</select>
+  	
+  	<insert id="insert-bookList" parameterType="BookList" useGeneratedKeys="true" keyProperty="bookNo">
+  		INSERT INTO bookList (wearing_day, publication_day, isbn, whether)
+		VALUES (#{wearingDay}, #{publicationDay}, #{isbn}, true)
+		
+  	</insert>
+ 
+  
+  	<select id="select-bookList" parameterType="String" resultType="BookList">
+  		SELECT * FROM bookList WHERE isbn = #{isbn}
+  	</select>
+  	
+  	<select id="select-bookList-no" parameterType="int" resultType="BookList">
+  		SELECT * FROM bookList WHERE book_no = #{bookNo}
+  	</select>
+  	
+  	
+  	<select id="select-count-bookList" resultType="int">
+  		SELECT COUNT(*) cnt FROM bookList
+  	</select>
+  	
+  	<update id="update-bookList" parameterType="BookList">
+  		UPDATE bookList SET wearing_day=#{wearingDay}, publication_day = #{publicationDay}, isbn = #{isbn}
+  		WHERE book_no = #{bookNo}  
+  	</update>
+  	
+  	<delete id="delete-bookList" parameterType="int">
+  		DELETE FROM bookList WHERE book_no = #{bookNo}
+  	</delete>
+  	
+  	<update id="loan-bookList" parameterType="int">
+  		UPDATE bookList SET whether = false
+  		WHERE book_no = #{bookNo}  
+  	</update>
+  	
+  	<update id="return-bookList" parameterType="int">
+  		UPDATE bookList SET whether = true
+  		WHERE book_no = #{bookNo}  
+  	</update>
+  	
+  	<select id="select-count-bookList-isbn" parameterType="String" resultType="int">
+  		SELECT COUNT(*) FROM BookList WHERE isbn = #{isbn}
+  	</select>
+  	
+  	<select id="select-count-bookList-whether" parameterType="String" resultType="int">
+  		SELECT COUNT(if(whether=true, whether, null)) FROM BookList WHERE isbn = #{isbn}
+  	</select>
+  	
+  	<resultMap type="BookList" id="BookListResultMap">
+  		<id property="bookNo" column="book_no"/>
+  		<result property="wearingDay" column="wearing_day"/>
+  		<result property="publicationDay" column="publication_day"/>
+  		<result property="isbn" column="isbn"/>
+  		<result property="whether" column="whether"/>
+  		<result property="book.title" column="title"/>
+  		<result property="book.author" column="author"/>
+  		<result property="book.publisher" column="publisher"/>
+  		<result property="book.attachment" column="attachment"/>
+  	</resultMap>
+  	
+  	<select id="select-bookList-book-no" parameterType="int" resultMap="BookListResultMap">
+  		SELECT bl.*, b.* FROM bookList bl, book b 
+  		WHERE bl.isbn = b.isbn and book_no = #{bookNo}
+  	</select>
+  
+  
+  </mapper>
+  
+  

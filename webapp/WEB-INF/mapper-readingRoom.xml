@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="library.model.vo.ReadingRoom">
+  
+ 	<select id="select-all-ReadingRoom" resultType="ReadingRoom">
+  		SELECT *FROM readingRoom
+  	</select>
+  
+  	<update id="update-reserv-ReadingRoom" parameterType="ReadingRoom">
+  		UPDATE readingRoom SET user_no = #{userNo}, reservation = TRUE, time = DATE_ADD(NOW(), INTERVAL 4 HOUR)
+  		WHERE room_no = #{roomNo} AND seat_no = #{seatNo}
+  	</update>
+  	
+  	<update id="update-increase-ReadingRoom" parameterType="int">
+  		UPDATE readingRoom SET time = DATE_ADD(NOW(), INTERVAL 4 HOUR)
+  		WHERE user_no = #{userNo}
+  	</update>
+  	
+  	<update id="update-return-ReadingRoom" parameterType="int">
+  		UPDATE readingRoom SET user_no = NULL, reservation = FALSE, time = NULL
+  		WHERE user_no = #{userNo}
+  	</update>
+  	
+  	<select id="select-user-ReadingRoom" resultType="ReadingRoom" parameterType="int">
+  		SELECT *FROM readingRoom WHERE user_no = #{userNo}
+  	</select>
+  	
+  	<select id="select-countReservation-ReadingRoom" resultType="int" parameterType="int">
+  		SELECT COUNT(if(reservation=false, reservation, null)) FROM readingRoom WHERE room_no = #{roomNo}
+  	</select>
+  
+  </mapper>

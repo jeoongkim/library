@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="library.model.vo.AudioList">
+  
+  	<select id="select-all-audioList" resultType="AudioList">
+  		SELECT * FROM audioList ORDER 
+  	</select>
+
+  	<select id="select-audioList" parameterType="String" resultType="AudioList">
+  		SELECT * FROM audioList WHERE isbn = #{isbn} 
+  	</select>
+  	
+  	<select id="select-audioList-no" parameterType="int" resultType="AudioList">
+  		SELECT * FROM audioList WHERE audio_no = #{audioNo}
+  	</select>
+  	
+  	<insert id="insert-audioList" parameterType="AudioList">
+  		INSERT INTO audioList (wearing_day, publication_day, isbn, file)
+		VALUES (#{wearingDay}, #{publicationDay}, #{isbn}, #{file})
+  	</insert>
+  	
+  	<delete id="delete-audioList" parameterType="String">
+  		DELETE FROM audioList WHERE isbn = #{isbn}
+  	</delete>
+  	
+  	<update id="update-audioList" parameterType="AudioList">
+  		UPDATE audioList SET wearing_day=#{wearingDay}, publication_day = #{publicationDay}, isbn = #{isbn}, file = #{file}
+  		WHERE audio_no = #{audioNo}
+  	</update>
+  
+  
+  </mapper>
+  
+  

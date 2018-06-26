@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HELLO</title>
+</head>
+<body>	
+	<div>반납일 안내 메일</div>
+	<hr>
+	<table>
+		<tr>
+			<td>안녕하세요. 희망도서관 입니다.</td>
+		</tr>
+		<tr>
+			<td>${ user.name } 님이 예약한 도서 [${ book.title }] 이 반납되었습니다.</td>
+		</tr>
+		<tr>
+			<td>${ loan.deadline?string('yyyy.MM.dd') } 까지 대출 가능합니다.</td>
+		</tr>
+		
+	</table>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+  <configuration>
+  	<settings>
+  		<setting name="jdbcTypeForNull" value="NULL"/>
+  		<setting name="mapUnderscoreToCamelCase" value="true"/>
+  	</settings>
+  	
+  	<typeAliases>
+  		<typeAlias type="library.model.vo.Users" alias="Users"/>
+  		<typeAlias type="library.model.vo.Book" alias="Book"/>
+  		<typeAlias type="library.model.vo.Authority" alias="Authority"/>
+  		<typeAlias type="library.model.vo.BookList" alias="BookList"/>
+  		<typeAlias type="library.model.vo.Loan" alias="Loan"/>
+  		<typeAlias type="library.model.vo.Reservation" alias="Reservation"/>
+  		<typeAlias type="library.model.vo.History" alias="History"/>
+  		<typeAlias type="library.model.vo.Notice" alias="Notice"/>
+  		<typeAlias type="library.model.vo.BookApply" alias="BookApply"/>
+  		<typeAlias type="library.model.vo.Score" alias="Score"/>
+  		<typeAlias type="library.model.vo.ReadingRoom" alias="ReadingRoom"/>
+  		<typeAlias type="library.model.vo.Volunteer" alias="Volunteer"/>
+  		<typeAlias type="library.model.vo.AudioList" alias="AudioList"/>
+  	</typeAliases>
+  </configuration>

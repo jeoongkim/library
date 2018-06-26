@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="library.model.vo.Book">
+  	<select id="select-all-book" resultType="Book">
+  		SELECT *FROM book
+  	</select>
+  	
+  	<select id="select-allAudio-book" resultType="Book">
+  		SELECT * FROM book WHERE group_name = 'O' ORDER BY isbn_no DESC
+  	</select>
+  	
+  	<select id="select-Audio-book" resultType="Book" parameterType="String">
+  		SELECT * FROM book WHERE group_name = 'O' AND isbn = #{isbn}
+  	</select>
+  	
+  	<insert id="insert-book" parameterType="Book">
+  		INSERT INTO book (isbn, title, author, publisher, attachment, group_name)
+		VALUES (#{isbn}, #{title}, #{author}, #{publisher}, #{attachment}, #{groupName})
+  	</insert>
+ 
+  
+  	<select id="select-book" parameterType="String" resultType="Book">
+  		SELECT * FROM book WHERE isbn = #{isbn}
+  	</select>
+  	
+  	
+  	<select id="select-count-book" resultType="int">
+  		SELECT COUNT(*) cnt FROM book
+  	</select>
+  	
+  	<update id="update-book" parameterType="Book">
+  		UPDATE book SET title = #{title}, author=#{author}, publisher=#{publisher}, 
+  				group_name=#{groupName}, attachment=#{attachment}
+  		WHERE isbn = #{isbn}  
+  	</update>
+  	
+  	<delete id="delete-book" parameterType="String">
+  		DELETE FROM book WHERE isbn = #{isbn}
+  	</delete>
+  	
+  	<select id="select-last-insert-id" resultType="int">
+  		SELECT LAST_INSERT_ID()
+  	</select>
+  	
+  	<select id="select-book-input" parameterType="String" resultType="Book">
+  		SELECT * FROM book WHERE title LIKE #{input} OR author LIKE #{input} OR publisher LIKE #{input}
+  	</select>
+  	
+  	<select id="selec-list-isbnNo" resultType="Book">
+  		SELECT * FROM book ORDER BY isbn_no DESC
+  	</select>
+
+  </mapper>
+  
+  

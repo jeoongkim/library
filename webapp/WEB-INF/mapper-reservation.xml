@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper namespace="library.model.vo.Reservation">
+	<insert id="insert-reservation" parameterType="Reservation">
+		INSERT INTO reservation(isbn,user_no)
+		VALUES(#{isbn},#{userNo})
+	</insert>
+	<delete id="delete-reservation" parameterType="int" >
+		DELETE FROM reservation WHERE reser_no =#{reserNo}
+	</delete>
+	<select id="select-reservation" parameterType="int" resultType="int">
+		SELECT reser_no FROM reservation WHERE user_no = #{userNo}
+	</select>
+	
+	<select id="select-isbn-reservation" parameterType="String" resultType="reservation">
+		SELECT * FROM reservation WHERE isbn = #{isbn} order by reser_no asc limit 1
+	</select>
+	
+	<select id="select-count-reservation" parameterType="String" resultType="int">
+  		SELECT COUNT(*) FROM reservation WHERE isbn = #{isbn};
+  	</select>
+  	<select id="select-list-reservation" resultType="Reservation">
+  		SELECT *FROM reservation
+  	</select>
+  	
+  	<resultMap type="Reservation" id="ReservationResultMap">
+  		<id property="reserNo" column="reser_no"/>
+  		<result property="users.name" column="name"/>
+  		<result property="book.title" column="title"/>
+  	</resultMap>
+  	
+  	<select id="select-joinList-reservation" resultMap="ReservationResultMap">
+		SELECT r.reser_no, u.name, b.title
+		FROM reservation r, users u, book b
+		WHERE r.user_no = u.user_no AND r.isbn = b.isbn
+	</select>
+	
+	<select id="select-total-reservUser" parameterType="int" resultType="int">
+		SELECT COUNT(user_no) FROM reservation
+		WHERE user_no = #{ userNo }
+	</select>
+	
+	<resultMap type="Reservation" id="reservationResultMap2">
+  		<id property="reserNo" column="reser_no"/>
+  		<result property="isbn" column="isbn"/>
+  		<result property="userNo" column="user_no"/>
+  		<result property="users.name" column="name"/>
+  		<result property="book.title" column="title"/>
+  		<result property="book.author" column="author"/>
+  		<result property="book.publisher" column="publisher"/>
+  	</resultMap>
+  	
+  	<select id="select-reserv-list" parameterType="int" resultMap="reservationResultMap2">
+  		SELECT r.*, u.name, b.title, b.author, b.publisher
+		FROM reservation r, users u, book b
+		WHERE r.isbn = b.isbn 
+		AND r.user_no = u.user_no
+		AND r.user_no = #{ userNo }
+		ORDER BY reser_no DESC
+  	</select>
+
+</mapper>  

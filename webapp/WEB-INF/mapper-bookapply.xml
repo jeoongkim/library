@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="library.model.vo.BookApply">
+  
+  	<resultMap type="BookApply" id="bookapplyResultMap">
+  		<id property="applyNo" column="apply_no"/>
+  		<result property="title" column="title"/>
+  		<result property="author" column="author"/>
+  		<result property="publisher" column="publisher"/>
+  		<result property="userNo" column="user_no"/>
+  		<result property="applyDate" column="apply_date"/>
+  		<result property="warehousing" column="warehousing"/>
+  		<result property="isbn" column="isbn"/>
+  		<result property="users.name" column="name"/>
+  	</resultMap>
+  
+  	<select id="select-all-apply" resultMap="bookapplyResultMap">
+  		SELECT b.apply_no, b.title, b.author, b.publisher, b.apply_date, b.user_no, b.isbn, b.warehousing, u.name 
+		FROM book_apply b, users u
+		WHERE b.user_no = u.user_no
+		AND b.warehousing = false
+		ORDER BY apply_no DESC
+  	</select>
+ 
+  	<select id="select-userNo-list" parameterType="int" resultMap="bookapplyResultMap">
+  		SELECT b.apply_no, b.title, b.author, b.publisher, b.apply_date, b.user_no, b.isbn, b.warehousing, u.name 
+		FROM book_apply b, users u
+		WHERE b.user_no = u.user_no
+		AND b.user_no = #{ userNo }
+		ORDER BY apply_no DESC
+  	</select>
+  	
+  	<select id="select-book-apply" parameterType="int" resultMap="bookapplyResultMap">
+  		SELECT b.apply_no, b.title, b.author, b.publisher, b.apply_date, b.user_no, b.isbn, b.warehousing, u.name 
+		FROM book_apply b, users u
+		WHERE b.user_no = u.user_no
+		AND b.apply_no = #{ applyNo }
+  	</select>
+  	
+  	<insert id="insert-bookapply" parameterType="bookapply">
+  		INSERT book_apply (title, author, publisher, user_no, isbn, apply_date)
+		VALUES (#{title}, #{author}, #{publisher}, #{userNo}, #{isbn}, CURDATE())
+  	</insert>
+  	
+  	<update id="update-warehousing" parameterType="bookapply">
+  		UPDATE book_apply SET warehousing = #{warehousing}
+  		WHERE apply_no = #{applyNo}
+  	</update>
+ 	
+  	<select id="select-month-user" parameterType="int" resultType="int">
+  		SELECT COUNT(user_no) FROM book_apply
+		WHERE user_no = #{ userNo }
+		AND apply_date LIKE DATE_FORMAT((NOW()), '%Y-%m-%')
+  	</select>
+  	
+  	
+  	
+  	
+
+  </mapper>
+  
+  

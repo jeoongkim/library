@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="library.model.vo.Loan">
+  	<insert id="insert-loan" parameterType="loan">
+  		INSERT INTO loan(reserv_loan_date, user_no, book_no,loan_date,deadline,extension)
+		VALUES(NULL,#{userNo},#{bookNo},CURDATE(),#{deadline},FALSE);
+  	</insert>
+  	
+  	<insert id="insert-reserv-loan" parameterType="loan">
+  		INSERT INTO loan(reserv_loan_date, user_no, book_no,loan_date,deadline,extension)
+		VALUES(CURDATE(),#{userNo},#{bookNo},NULL,#{deadline}, FALSE);
+  	</insert>
+  	
+  	<update id="update-reserv-loan" parameterType="int">
+  		UPDATE loan SET reserv_loan_date = NULL, loan_date = CURDATE()
+  		WHERE loan_no = #{loanNo}
+  	</update>
+  	
+	<delete id="delete-loan" parameterType="int">
+		DELETE FROM loan WHERE loan_no = #{loanNo}
+	</delete>
+	
+	<select id="select-list-loan" resultType="Loan">
+		SELECT *FROM loan
+	</select>
+	
+	<resultMap type="Loan" id="LoanResultMap">
+  		<id property="loanNo" column="loan_no"/>
+  		<result property="loanDate" column="loan_date"/>
+  		<result property="deadline" column="deadline"/>
+  		<result property="bookNo" column="book_no"/>
+  		<result property="reservLoanDate" column="reserv_loan_date"/>
+  		<result property="userNo" column="user_no"/>
+  		<result property="extension" column="extension"/>
+  		<result property="users.name" column="name"/>
+  		<result property="bookList.book.title" column="title"/>
+  	</resultMap>
+  	
+  	<select id="select-loan-bookNo" parameterType="int" resultMap="LoanResultMap">
+		SELECT l.*, u.name, bo.title
+		FROM loan l, users u, 
+			(SELECT b.title ,bl.book_no
+			FROM book b, bookList bl
+			WHERE bl.isbn = b.isbn )bo
+		WHERE l.user_no = u.user_no AND l.book_no = bo.book_no AND l.book_no=#{bookNo}
+	</select>  
+	
+	<select id="select-joinList-loan" resultMap="LoanResultMap">
+		SELECT l.*, u.name, bo.title
+		FROM loan l, users u, 
+			(SELECT b.title ,bl.book_no
+			FROM book b, bookList bl
+			WHERE bl.isbn = b.isbn )bo
+		WHERE l.user_no = u.user_no AND l.book_no = bo.book_no
+	</select>
+	
+	<select id="select-deadline-email" resultMap="LoanResultMap">
+		SELECT user_no
+		FROM loan
+		WHERE reserv_loan_date IS null 
+		AND deadline LIKE DATE_FORMAT((NOW() + INTERVAL 1 DAY), '%Y-%m-%d')
+	</select>
+	
+	<select id="select-deadline-reserv" resultType="Loan">
+		SELECT * FROM loan
+		WHERE loan_date IS null AND deadline = CURDATE()
+	</select>
+	
+	<update id="update-extension-loan" parameterType="Loan">
+  		UPDATE loan SET deadline = #{deadline}, extension = TRUE
+  		WHERE book_no=#{bookNo}
+  	</update>
+  	
+  	<select id="select-userNo-loan" resultMap="LoanResultMap" parameterType="int">
+  	SELECT l.*, u.name, bo.title
+		FROM loan l, users u, 
+			(SELECT b.title ,bl.book_no
+			FROM book b, bookList bl
+			WHERE bl.isbn = b.isbn )bo
+		WHERE l.user_no = u.user_no AND l.book_no = bo.book_no
+		and l.user_no = #{userNo} and l.reserv_loan_date is null
+	</select>
+	
+	<select id="select-search-userNo-loan" resultMap="LoanResultMap" parameterType="String">
+  	SELECT l.*, u.name, bo.title
+		FROM loan l, users u, 
+			(SELECT b.title ,bl.book_no
+			FROM book b, bookList bl
+			WHERE bl.isbn = b.isbn )bo
+		WHERE l.user_no = u.user_no AND l.book_no = bo.book_no
+		and l.user_no LIKE #{userNo} and l.reserv_loan_date is null
+	</select>
+	
+	<select id="select-total-loan-reservUser" resultType="int">
+		SELECT COUNT(user_no) FROM loan
+		WHERE user_no = #{ userNo }
+		AND loan_date IS null
+	</select>
+	
+	<resultMap type="Loan" id="LoanResultMap2">
+  		<id property="loanNo" column="loan_no"/>
+  		<result property="loanDate" column="loan_date"/>
+  		<result property="deadline" column="deadline"/>
+  		<result property="bookNo" column="book_no"/>
+  		<result property="reservLoanDate" column="reserv_loan_date"/>
+  		<result property="userNo" column="user_no"/>
+  		<result property="extension" column="extension"/>
+  		<result property="users.name" column="name"/>
+  		<result property="bookList.book.title" column="title"/>
+  		<result property="bookList.book.author" column="author"/>
+  		<result property="bookList.book.publisher" column="publisher"/>
+  	</resultMap>
+	
+  	<select id="select-loan-reserv" parameterType="int" resultMap="LoanResultMap2">
+  		SELECT l.*, u.name, bo.title, bo.author, bo.publisher
+		FROM loan l, users u, 
+			(SELECT b.title, b.author, b.publisher, bl.book_no
+			FROM book b, bookList bl
+			WHERE bl.isbn = b.isbn )bo
+		WHERE l.user_no = u.user_no AND l.book_no = bo.book_no
+		and l.user_no = #{ userNo } and l.loan_date is null
+		ORDER BY loan_no DESC
+  	</select>
+  	
+  	<select id="select-deadline-out-loan" resultType="Loan">
+		SELECT * FROM loan
+		WHERE reserv_loan_date IS null AND deadline LIKE DATE_FORMAT((NOW() - INTERVAL 1 DAY), '%Y-%m-%d')
+	</select>
+
+  </mapper>

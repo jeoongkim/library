@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="library.model.vo.Score">
+  	
+ 
+ 	<insert id="insert-score" parameterType="Score">
+ 		INSERT INTO score (book_score, user_no, isbn)
+ 		VALUES(#{bookScore},#{userNo},#{isbn})
+ 	</insert>
+ 	
+  	<select id="select-last-insert-id" resultType="int">
+  		SELECT LAST_INSERT_ID()
+  	</select>
+  	
+  	<select id="select-countAll-score" resultType="int">
+  		SELECT COUNT(*) cnt FROM score
+  	</select> 
+  	 	
+  	<select id="select-countUser-score" parameterType="String" resultType="int">
+  		SELECT COUNT(*) cnt FROM score WHERE isbn = #{isbn}
+  	</select>  	
+  	
+  	<select id="select-userNo-score" parameterType="int" resultType="Score">
+  		SELECT * FROM score WHERE user_no = #{userNo}
+  	</select>
+  	
+  	<select id="select-isbn-score" parameterType="String" resultType="Score">
+  		SELECT * FROM score WHERE isbn = #{isbn}
+  	</select>
+  	
+  </mapper>

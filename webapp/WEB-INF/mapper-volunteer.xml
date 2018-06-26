@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="library.model.vo.Volunteer">
+  
+  	<select id="select-list-all" resultType="Volunteer">
+  		SELECT * FROM volunteer ORDER BY volun_no DESC
+  	</select>
+  
+  	<select id="select-list-volunNo" parameterType="int" resultType="Volunteer">
+  		SELECT * FROM volunteer WHERE volun_no = #{volunNo}
+  	</select>
+  	
+  	<select id="select-userNo" parameterType="int" resultType="Volunteer">
+  		SELECT * FROM volunteer WHERE user_no = #{userNo}
+  	</select>
+  	
+  	<insert id="insert-volun" parameterType="Volunteer">
+  		INSERT volunteer (title, description, reg_date, user_no, password, apply_date)
+		VALUES (#{title}, #{description}, CURDATE(), #{userNo}, #{password}, #{applyDate});
+  	</insert>
+  	
+  	<delete id="delete-volun" parameterType="int">
+  		DELETE FROM volunteer WHERE volun_no = #{volunNo}
+  	</delete>
+  	
+  	<update id="update-volun" parameterType="Volunteer">
+	  	UPDATE volunteer SET title = #{title}, description = #{description}, password = #{password}, apply_date = #{applyDate}, user_no = #{userNo}
+		WHERE volun_no = #{volunNo}
+		AND user_no = #{userNo}
+  	</update>
+
+  </mapper>
+  
+  

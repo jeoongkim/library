@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper namespace="library.model.vo.History">
+	<insert id="insert-history" parameterType="History">
+		INSERT INTO history (book_no, user_no, loan_date, return_date)
+		VALUES (#{bookNo}, #{userNo}, CURDATE(), NULL);
+	</insert>
+	
+	<update id="update-history" parameterType="History">
+		UPDATE history SET return_date = CURDATE()
+  		WHERE book_no = #{bookNo} and user_no = #{userNo} and loan_date = #{loanDate}
+  		order by his_no desc limit 1
+	</update>
+	
+	
+	
+	<resultMap type="History" id="HistoryResultMap">
+  		<id property="hisNo" column="his_no"/>
+  		<result property="loanDate" column="loan_date"/>
+  		<result property="returnDate" column="return_date"/>
+  		<result property="bookNo" column="book_no"/>
+  		<result property="bookList.isbn" column="isbn"/>
+  		<result property="bookList.book.title" column="title"/>
+  	</resultMap>
+  	
+  	<select id="history-userNo" parameterType="int" resultMap="HistoryResultMap">
+		SELECT h.his_no, h.book_no, h.loan_date, h.return_date, bo.title, bo.isbn 
+		FROM history h, (SELECT b.title, bl.book_no, bl.isbn
+			FROM book b, bookList bl
+			WHERE bl.isbn = b.isbn )bo 
+		WHERE h.book_no = bo.book_no AND user_no = #{userNo}
+	</select>
+	
+  
+	<resultMap type="History" id="HistoryResultMap2">
+  		<id property="bookNo" column="book_no"/>
+  		<result property="userNo" column="user_no"/>
+  		<result property="bookList.book.isbn" column="isbn"/>
+  		<result property="bookList.book.title" column="title"/>
+  		<result property="bookList.book.author" column="author"/>
+  		<result property="bookList.book.publisher" column="publisher"/>
+  		<result property="bookList.book.attachment" column="attachment"/>
+  	</resultMap>
+	
+  	<select id="history-month-top10" resultMap="HistoryResultMap2">
+		SELECT h.book_no, bo.title, bo.author, bo.publisher, bo.attachment, bo.isbn , COUNT(isbn)
+		FROM history h, 
+			(SELECT b.isbn, b.title, b.author, b.publisher, b.attachment, bl.book_no
+			FROM book b, bookList bl
+			WHERE bl.isbn = b.isbn)bo
+		WHERE h.book_no = bo.book_no 
+		AND loan_date LIKE DATE_FORMAT((NOW() - INTERVAL 1 MONTH), '%Y-%m-%')
+		group by isbn
+		order by COUNT(isbn) desc limit 10
+	</select>
+
+
+	
+</mapper>  
